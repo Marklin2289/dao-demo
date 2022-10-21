@@ -1,16 +1,15 @@
-import {
-    NEW_STORE_VALUE,
-    FUNC,
-    PROPOSAL_DESCRIPTION,
-    developmentChains,
-    VOTING_DELAY,
-    proposalsFile,
-} from "./../helper-hardhat-config"
 // @ts-ignore
 import { ethers, network } from "hardhat"
-import { moveBlocks } from "../utils/move-blocks"
+import {
+    developmentChains,
+    VOTING_DELAY,
+    FUNC,
+    proposalsFile,
+    PROPOSAL_DESCRIPTION,
+    NEW_STORE_VALUE,
+} from "../helper-hardhat-config"
 import * as fs from "fs"
-// @ts-ignore
+import { moveBlocks } from "../utils/move-blocks"
 
 export async function propose(args: [], functionToCall: string, proposalDescription: string) {
     const governor = await ethers.getContract("GovernorContract")
@@ -33,10 +32,10 @@ export async function propose(args: [], functionToCall: string, proposalDescript
 
     const proposalId = proposeReceipt.events[0].args.proposalId
     let proposals = JSON.parse(fs.readFileSync(proposalsFile, "utf8"))
-    // @ts-ignore
     proposals[network.config.chainId!.toString()].push(proposalId.toString())
-    fs.writeFileSync(proposalsFile, JSON.stringify(proposals), "utf8")
+    fs.writeFileSync(proposalsFile, JSON.stringify(proposals))
 }
+
 // @ts-ignore
 propose([NEW_STORE_VALUE], FUNC, PROPOSAL_DESCRIPTION)
     .then(() => process.exit(0))
